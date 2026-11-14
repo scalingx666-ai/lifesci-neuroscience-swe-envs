@@ -1,0 +1,74 @@
+version = "1.0"
+
+[task]
+name = "default/CMU-HKN__CMU-ECE-CS-Guide-121"
+description = "Create website for CMU ECE CS Guide"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "CMU-ECE-CS-Guide",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "CMU-HKN/CMU-ECE-CS-Guide"
+ref = "6c0c9db341dcdccdaaa6016841bf25244c3449ed"
+reference = "https://github.com/CMU-HKN/CMU-ECE-CS-Guide/pull/121"
+source_access = "auto"
+built_at = "2026-11-14T06:09:02.964940+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:a3aba466e15a7bcf5d1be8e71b1a50c37817c716bc97510a25653935b787cde6"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2025-12-30T00:55:45Z"
+diff_format = "unified"
+context_files = [
+    ".github/workflows/deploy.yml",
+    ".gitignore",
+    ".vitepress/config.mts",
+    ".vitepress/theme/index.ts",
+    ".vitepress/theme/style.css",
+    "contributing.md",
+    "cs_core/index.md",
+    "ece_core/index.md",
+    "electives/index.md",
+    "index.md",
+    "math_science_reqs/index.md",
+    "package-lock.json",
+    "package.json",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 3023
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

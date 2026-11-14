@@ -1,0 +1,69 @@
+version = "1.0"
+
+[task]
+name = "default/predictive-clinical-neuroscience__PCNtoolkit-634"
+description = "Fix links in the docs"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "PCNtoolkit",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "predictive-clinical-neuroscience/PCNtoolkit"
+ref = "2bb7e6751e2f075cc8a6ea684c7f1a1b4f2d2005"
+reference = "https://github.com/predictive-clinical-neuroscience/PCNtoolkit/pull/634"
+source_access = "auto"
+built_at = "2026-11-14T06:14:07.760962+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:80b192bbf9fcd399c726e32bbe2e833a099641e58b27433129ad5e5f4e7d72d3"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-06T13:44:42Z"
+diff_format = "unified"
+context_files = [
+    "CONTRIBUTING.md",
+    "README.md",
+    "doc/development/contributing.rst",
+    "doc/development/roadmap.rst",
+    "doc/getting_started/background.rst",
+    "doc/support/get_help.rst",
+    "pcntoolkit/regression_model/hbr.py",
+    "pcntoolkit/regression_model/regression_model.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 99
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

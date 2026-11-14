@@ -1,0 +1,53 @@
+diff --git a/bidscoin/bidsapps/skullstrip.py b/bidscoin/bidsapps/skullstrip.py
+index 641b93cc..1adc3264 100755
+--- a/bidscoin/bidsapps/skullstrip.py
++++ b/bidscoin/bidsapps/skullstrip.py
+@@ -16,6 +16,7 @@
+ import tempfile
+ from rich.progress import track
+ from pathlib import Path
++from shlex import quote
+ from importlib.util import find_spec
+ if find_spec('bidscoin') is None:
+     sys.path.append(str(Path(__file__).parents[2]))
+@@ -141,7 +142,7 @@ def skullstrip(bidsfolder: str, pattern: str, participant: list, masked: str, ou
+                         jt.outputPath = f"{os.getenv('HOSTNAME')}:{Path.cwd() if DEBUG else tempfile.gettempdir()}/{jt.jobName}.out"
+                         jobids.append(pbatch.runJob(jt))
+                         LOGGER.info(f"Your '{jt.jobName}' job has been submitted with ID: {jobids[-1]}")
+-                    elif run_command(f"mri_synthstrip -i {srcimg} -o {outputimg} -m {maskimg} {args}"):
++                    elif run_command(f"mri_synthstrip -i {quote(str(srcimg))} -o {quote(str(outputimg))} -m {quote(str(maskimg))} {args}"):
+                         continue
+ 
+                     # Add a json sidecar-file with the "SkullStripped" field
+diff --git a/tests/test_skullstrip.py b/tests/test_skullstrip.py
+new file mode 100644
+index 00000000..439c689e
+--- /dev/null
++++ b/tests/test_skullstrip.py
+@@ -0,0 +1,26 @@
++"""Focused tests for local SynthStrip command construction."""
++from pathlib import Path
++from shlex import split
++from unittest.mock import patch
++
++from bidscoin.bidsapps import skullstrip
++
++
++def test_skullstrip_literal_paths(tmp_path: Path):
++    """Keep all three image paths intact under a non-shell-safe dataset root."""
++    bidsdir = (tmp_path / "dataset with spaces;literal'quote").resolve()
++    source = bidsdir/'sub-01'/'anat'/'sub-01_T1w.nii.gz'
++    source.parent.mkdir(parents=True)
++    source.touch()  # Synthetic placeholder; the command failure skips image I/O
++    output = bidsdir/'derivatives'/'skullstrip'/'sub-01'/'anat'/'sub-01_space-orig_desc-brain_T1w.nii.gz'
++    mask = output.with_name('sub-01_space-orig_desc-brain_mask.nii.gz')
++    with patch.object(skullstrip.shutil, 'which', return_value='/synthetic/mri_synthstrip'), \
++         patch.object(skullstrip.bcoin, 'setup_logging'), \
++         patch.object(skullstrip, 'lsdirs', return_value=[]), \
++         patch.object(skullstrip, 'track', side_effect=lambda items, **kwargs: items), \
++         patch.object(skullstrip, 'run_command', return_value=1) as command:
++        skullstrip.skullstrip(str(bidsdir), 'anat/*_T1w.nii.gz', ['01'], '', [], False, '--no-csf', '')
++    command.assert_called_once()
++    assert split(command.call_args.args[0]) == [
++        'mri_synthstrip', '-i', str(source), '-o', str(output), '-m', str(mask), '--no-csf'
++    ]

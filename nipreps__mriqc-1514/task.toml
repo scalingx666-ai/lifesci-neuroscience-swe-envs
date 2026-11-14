@@ -1,0 +1,63 @@
+version = "1.0"
+
+[task]
+name = "default/nipreps__mriqc-1514"
+description = "ENH: Load the BOLD series into memory before head-motion resampling"
+
+[metadata]
+difficulty = "medium"
+category = "bugfix"
+keywords = [
+    "mriqc",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "nipreps/mriqc"
+ref = "587123f3409329b404cbc4e2223c8750b88bc322"
+reference = "https://github.com/nipreps/mriqc/pull/1514"
+source_access = "auto"
+built_at = "2026-11-14T06:10:22.362821+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:b022ca0c0e8630ead3ee730b6916dc19038edbd3e16178b86ebf74470471837e"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-13T10:20:38Z"
+diff_format = "unified"
+context_files = [
+    "mriqc/workflows/functional/base.py",
+    "mriqc/workflows/tests/test_hmc.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 72
+difficulty = "medium"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

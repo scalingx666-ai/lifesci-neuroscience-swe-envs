@@ -1,0 +1,62 @@
+version = "1.0"
+
+[task]
+name = "default/netneurolab__netneurotools-183"
+description = "Fix return statement in MMP case for atlas selection"
+
+[metadata]
+difficulty = "easy"
+category = "bugfix"
+keywords = [
+    "netneurotools",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "netneurolab/netneurotools"
+ref = "de0bcf328a57a9766d77d4cd62dcba9dda4edf9f"
+reference = "https://github.com/netneurolab/netneurotools/pull/183"
+source_access = "auto"
+built_at = "2026-11-14T06:15:58.360449+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:5db0aba99b04719fc5b6880cf55a2428ecae385702e62b3bcae3f034eacb2396"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-06-10T19:15:44Z"
+diff_format = "unified"
+context_files = [
+    "netneurotools/plotting/pyvista_plotters.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 2
+difficulty = "trivial"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

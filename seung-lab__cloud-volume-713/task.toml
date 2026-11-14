@@ -1,0 +1,63 @@
+version = "1.0"
+
+[task]
+name = "default/seung-lab__cloud-volume-713"
+description = "feat: add crackle download for graphene"
+
+[metadata]
+difficulty = "medium"
+category = "bugfix"
+keywords = [
+    "cloud-volume",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "seung-lab/cloud-volume"
+ref = "ce38856a4d425916c9b404ac359dbf964fec5411"
+reference = "https://github.com/seung-lab/cloud-volume/pull/713"
+source_access = "auto"
+built_at = "2026-11-14T06:14:08.137728+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:bd43b1ca7540da0c57ffc4fbef51cbc0609edeb397528e886b5b803bbe45db3c"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-05T01:41:17Z"
+diff_format = "unified"
+context_files = [
+    "cloudvolume/datasource/precomputed/image/rx.py",
+    "cloudvolume/frontends/graphene.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 56
+difficulty = "medium"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

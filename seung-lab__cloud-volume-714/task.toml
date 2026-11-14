@@ -1,0 +1,63 @@
+version = "1.0"
+
+[task]
+name = "default/seung-lab__cloud-volume-714"
+description = "perf(mesh): deduplicate_vertices without np.unique(axis=0)"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "cloud-volume",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "seung-lab/cloud-volume"
+ref = "d8d698f2f7656954ba20070cc2a8813f3cc20d25"
+reference = "https://github.com/seung-lab/cloud-volume/pull/714"
+source_access = "auto"
+built_at = "2026-11-14T06:14:05.492401+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:ea38e7eee06d1c09749666c252fb1ee8ff524857e68306821aa09c78ed4a1b2c"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-10T17:54:11Z"
+diff_format = "unified"
+context_files = [
+    "cloudvolume/mesh.py",
+    "test/test_meshing.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 155
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

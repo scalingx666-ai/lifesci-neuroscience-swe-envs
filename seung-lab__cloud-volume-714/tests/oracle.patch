@@ -1,0 +1,178 @@
+diff --git a/cloudvolume/mesh.py b/cloudvolume/mesh.py
+index aea925b6..82b9ba7a 100644
+--- a/cloudvolume/mesh.py
++++ b/cloudvolume/mesh.py
+@@ -377,31 +377,64 @@ def load(self, filename:str) -> "Mesh":
+         return Mesh.from_obj(f.read())
+ 
+   def deduplicate_vertices(self, is_chunk_aligned):
+-    faces = self.faces
++    """
++    Merge each pair of vertices that share a position, occur exactly
++    twice and are both chunk aligned. Vertices no face uses are dropped.
++    The remaining vertices are ordered by (x, y, z), then by index, with
++    a merged vertex first among vertices at its position. If no vertex is
++    chunk aligned, nothing can merge, so the sort is skipped and the
++    vertices keep their order. A vertex with a NaN coordinate is never
++    merged and stays one vertex.
++
++    Uses only numeric sorts, which release the GIL: sorting the rows
++    with np.unique(..., axis=0) took ~16 s on a 5.6M face mesh and held
++    the GIL for most of it, stalling every other thread.
++    """
+     verts = self.vertices
+-    # find all vertices that have exactly 2 duplicates
+-    unique_vertices, unique_inverse, counts = np.unique(
+-      verts, return_inverse=True, return_counts=True, axis=0
+-    )
+-    
+-    only_double = np.where(counts == 2)[0]
+-    is_doubled = np.isin(unique_inverse, only_double)
+-    # this stores whether each vertex should be merged or not
+-    do_merge = np.array(is_doubled & is_chunk_aligned)
+-
+-    # setup an artificial 4th coordinate for vertex positions
+-    # which will be unique in general, 
+-    # but then repeated for those that are merged
+-    new_vertices = np.hstack((verts, np.arange(verts.shape[0])[:, np.newaxis]))
+-    new_vertices[do_merge, 3] = -1
+-  
+-    faces = faces.flatten()
+-
+-    # use unique to make the artificial vertex list unique and reindex faces
+-    vertices, newfaces = np.unique(new_vertices[faces], return_inverse=True, axis=0)
+-    newfaces = newfaces.astype(np.uint32).reshape( (len(newfaces) // 3, 3) )
+-
+-    return Mesh(vertices[:,0:3], newfaces, None, segid=self.segid, 
++    faces = self.faces.reshape(-1, 3)
++    n = verts.shape[0]
++    is_chunk_aligned = np.broadcast_to(np.asarray(is_chunk_aligned, dtype=bool), (n,))
++
++    if not is_chunk_aligned.any():
++      order = None
++      corners = faces
++    else:
++      # sort by position; lexsort is stable, so ties stay in index order
++      order = np.lexsort((verts[:,2], verts[:,1], verts[:,0]))
++      sorted_verts = verts[order]
++      # starts[i]: sorted vertex i is the first at its position;
++      # starts[n] marks the end
++      starts = np.ones(n + 1, dtype=bool)
++      np.any(sorted_verts[1:] != sorted_verts[:-1], axis=1, out=starts[1:n])
++      del sorted_verts
++
++      # pairs: sorted vertices i and i+1 are the only two at their position.
++      # If both are chunk aligned they are merged. If only the second is,
++      # neither is, but the merged vertex comes first, so swap the two.
++      pair = starts[:n-1] & ~starts[1:n] & starts[2:]
++      aligned = is_chunk_aligned[order]
++      second = np.flatnonzero(pair & aligned[:-1] & aligned[1:]) + 1
++      swap = np.flatnonzero(pair & ~aligned[:-1] & aligned[1:]) + 1
++      del starts, pair, aligned
++      order[swap], order[swap - 1] = order[swap - 1], order[swap]
++
++      # each vertex's place in sorted order; a merged pair takes the first's
++      rank = np.empty(n, dtype=np.uint32)
++      rank[order] = np.arange(n, dtype=np.uint32)
++      rank[order[second]] = rank[order[second - 1]]
++      corners = rank[faces]
++      del rank
++
++    # keep the vertices faces use, renumbered in the new order
++    used = np.zeros(n, dtype=bool)
++    used[corners] = True
++    newfaces = np.cumsum(used, dtype=np.uint32)
++    newfaces -= 1
++    newfaces = newfaces[corners]
++    del corners
++    kept = used if order is None else order[used]
++
++    return Mesh(verts[kept], newfaces, None, segid=self.segid,
+       encoding_type=self.encoding_type, encoding_options=self.encoding_options
+     )
+ 
+diff --git a/test/test_meshing.py b/test/test_meshing.py
+index 7f391ae1..d1ecb37f 100644
+--- a/test/test_meshing.py
++++ b/test/test_meshing.py
+@@ -147,6 +147,80 @@ def deduplicate(mesh, x, offset_x=0):
+   assert mesh != mesh2
+   assert mesh2.vertices.shape[0] == mesh.vertices.shape[0] - 3
+ 
++def _deduplicate_vertices_np_unique(mesh, is_chunk_aligned):
++  """
++  The np.unique(..., axis=0) implementation deduplicate_vertices replaced,
++  except when no vertex is chunk aligned: then the new code skips the sort
++  and keeps the input order, where the old code sorted the vertices.
++  """
++  if not np.any(is_chunk_aligned):
++    # only drop the vertices no face uses
++    used, inv = np.unique(mesh.faces, return_inverse=True)
++    newfaces = inv.reshape(-1, 3).astype(np.uint32)
++    return Mesh(mesh.vertices[used], newfaces, None, segid=mesh.segid)
++
++  verts = mesh.vertices
++  unique_vertices, unique_inverse, counts = np.unique(
++    verts, return_inverse=True, return_counts=True, axis=0
++  )
++  is_doubled = np.isin(unique_inverse, np.where(counts == 2)[0])
++  do_merge = np.array(is_doubled & is_chunk_aligned)
++  new_vertices = np.hstack((verts, np.arange(verts.shape[0])[:, np.newaxis]))
++  new_vertices[do_merge, 3] = -1
++  faces = mesh.faces.flatten()
++  vertices, newfaces = np.unique(new_vertices[faces], return_inverse=True, axis=0)
++  newfaces = newfaces.astype(np.uint32).reshape( (len(newfaces) // 3, 3) )
++  return Mesh(vertices[:,0:3], newfaces, None, segid=mesh.segid)
++
++@pytest.mark.parametrize("seed", range(50))
++def test_deduplicate_vertices_matches_np_unique(seed):
++  # Vertices on a small lattice repeat once, twice or more often, some as
++  # -0.0; some are used by no face, and some meshes have no faces at all.
++  rng = np.random.default_rng(seed)
++  n = int(rng.integers(1, 400))
++  span = int(rng.integers(1, 6))
++  verts = rng.integers(-span, span, size=(n, 3)).astype(np.float32)
++  verts[rng.random(n) < 0.2] *= -0.0
++  faces = rng.integers(0, n, size=(int(rng.integers(0, 600)), 3)).astype(np.uint32)
++  is_chunk_aligned = rng.random(n) < rng.random()
++  mesh = Mesh(verts, faces, segid=seed)
++
++  mesh2 = mesh.deduplicate_vertices(is_chunk_aligned)
++  assert mesh2 == _deduplicate_vertices_np_unique(mesh, is_chunk_aligned)
++  assert mesh2.segid == seed
++
++def test_deduplicate_vertices_none_aligned_keeps_order():
++  verts = np.array([[2,0,0], [0,0,0], [9,9,9], [0,0,0], [1,0,0]], dtype=np.float32)
++  faces = np.array([[0,1,4], [3,4,0]], dtype=np.uint32)
++  mesh = Mesh(verts, faces, segid=1)
++
++  mesh2 = mesh.deduplicate_vertices(np.zeros(5, dtype=bool))
++  # vertex 2 is unused and dropped; the rest keep their order
++  assert np.array_equal(mesh2.vertices, verts[[0,1,3,4]])
++  assert np.array_equal(mesh2.faces, [[0,1,3], [2,3,0]])
++
++def test_deduplicate_vertices_empty():
++  mesh = Mesh(np.zeros((0,3)), np.zeros((0,3)), segid=1)
++  mesh2 = mesh.deduplicate_vertices(np.zeros(0, dtype=bool))
++  assert mesh2.vertices.shape == (0,3)
++  assert mesh2.faces.shape == (0,3)
++
++@pytest.mark.parametrize("is_chunk_aligned", [True, False])
++def test_deduplicate_vertices_scalar_mask(is_chunk_aligned):
++  # a single bool stands for every vertex, as it did with np.unique
++  verts = np.array([[0,0,0], [0,0,0], [1,0,0], [2,0,0]], dtype=np.float32)
++  faces = np.array([[0,2,3], [1,2,3]], dtype=np.uint32)
++  mesh = Mesh(verts, faces, segid=1)
++
++  mesh2 = mesh.deduplicate_vertices(is_chunk_aligned)
++  assert mesh2 == _deduplicate_vertices_np_unique(mesh, is_chunk_aligned)
++  assert mesh2.vertices.shape[0] == (3 if is_chunk_aligned else 4)
++
++def test_deduplicate_vertices_mask_length_mismatch():
++  mesh = Mesh(np.zeros((5,3)), np.array([[0,1,2]]), segid=1)
++  with pytest.raises(ValueError):
++    mesh.deduplicate_vertices(np.ones(7, dtype=bool))
++
+ def test_get_mesh_caching(unsharded_vol):
+   unsharded_vol.cache.enabled = True
+   unsharded_vol.cache.flush()

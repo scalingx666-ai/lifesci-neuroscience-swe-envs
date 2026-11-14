@@ -1,0 +1,72 @@
+version = "1.0"
+
+[task]
+name = "default/netstim__leaddbs-1366"
+description = "Improved LeGUI alignment and added iEEG and bug fixes"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "leaddbs",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "netstim/leaddbs"
+ref = "a344d2d7d343f7a75077650e9d055b0d2b1f3445"
+reference = "https://github.com/netstim/leaddbs/pull/1366"
+source_access = "auto"
+built_at = "2026-11-14T06:16:03.950291+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:495099f72b909733f312989fae9f3375e4bf9c8c846bcbb7acce97b19413b3dc"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-03T01:32:08Z"
+diff_format = "unified"
+context_files = [
+    "ea_export_seeg_reconstruction_ieeg.m",
+    "ext_libs/LeGUI/LeGUI.mlapp",
+    "ext_libs/LeGUI/LeG_ACPCGUI.mlapp",
+    "ext_libs/LeGUI/LeG_AssignElectrodesGUI.mlapp",
+    "ext_libs/LeGUI/LeG_alignElecs.m",
+    "ext_libs/LeGUI/ReadMe.txt",
+    "ext_libs/myslicer/slice3i.m",
+    "helpers/seeg/ea_renderelstruct_seeg.m",
+    "helpers/seeg/ea_runacpc.m",
+    "helpers/seeg/ea_trajectory_seeg.m",
+    "helpers/seeg/legui2reco.m",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 564
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

@@ -1,0 +1,220 @@
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index a6092ac2..5834c299 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -23,7 +23,7 @@ follow the steps below to set your local development environment:
+     access to your fork so you can make changes and then submit Pull
+     Requests to the original PCNtoolkit repository (that you don't have
+     direct write access to). See [GitHub's guide to
+-    forking](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
++    forking](https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo).
+ 
+ 2.  **Clone your fork** - Cloning is the process of downloading your
+     GitHub copy of the project onto your computer, so you can make
+@@ -136,6 +136,6 @@ how everything looks. To do that:
+ ### Python code style
+ 
+ All Python code must adhere to
+-[PEP8](https://www.python.org/dev/peps/pep-0008/). We use
++[PEP8](https://peps.python.org/pep-0008/). We use
+ [ruff](https://docs.astral.sh/ruff/) for linting and formatting which is
+ installed in your development environment with `pip install -e ".[dev]"`.
+diff --git a/README.md b/README.md
+index 24009b03..3f98d7f0 100644
+--- a/README.md
++++ b/README.md
+@@ -39,7 +39,7 @@ model.fit_predict(train, test)
+ ### Users
+ The best place to learn Normative Modelling and the PCNtoolkit is our [website documentation](https://pcntoolkit.readthedocs.io/en/latest/).
+ 
+-Feel free to ask your questions and engage in discussions with the community on the [NeuroStars online forum](https://neurostars.org/tags/pcntoolkit). Please add the tag *pcntoolkit* to your post.
++Feel free to ask your questions and engage in discussions with the community on the [NeuroStars online forum](https://neurostars.org/tag/pcntoolkit/1106). Please add the tag *pcntoolkit* to your post.
+ 
+ ### Contributors
+ 
+diff --git a/doc/development/contributing.rst b/doc/development/contributing.rst
+index d85f5681..eb1364de 100644
+--- a/doc/development/contributing.rst
++++ b/doc/development/contributing.rst
+@@ -13,7 +13,7 @@ You are always welcome to contribute code yourself. PCNtoolkit runs on Linux, Ma
+ .. note::
+     To use PCNtoolkit you need to have installed `Git <https://git-scm.com/downloads>`_ and a Python version (we officially support Python version 3.12 and 3.13). Also, we recommend using `Anaconda <https://www.anaconda.com/download>`_ to manage Python.
+ 
+-1. **Fork the repository** - Forking creates your own copy (your "fork") of PCNtoolkit on your GitHub. This gives you full write access to your fork so you can make changes and then submit Pull Requests to the original PCNtoolkit repository (that you don't have direct write access to). See `GitHub’s guide to forking <https://docs.github.com/en/get-started/quickstart/fork-a-repo>`_.
++1. **Fork the repository** - Forking creates your own copy (your "fork") of PCNtoolkit on your GitHub. This gives you full write access to your fork so you can make changes and then submit Pull Requests to the original PCNtoolkit repository (that you don't have direct write access to). See `GitHub’s guide to forking <https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo>`_.
+ 
+ 2. **Clone your fork** - Cloning is the process of downloading your GitHub copy of the project onto your computer, so you can make changes to the code locally:
+ 
+@@ -93,4 +93,4 @@ Git Commit Messages
+ Python code style
+ """""""""""""""""""
+ 
+-All Python code must adhere to `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_. We use `ruff <https://docs.astral.sh/ruff/>`_ for linting and formatting which is installed in your development environment with ``pip install -e ".[dev]"``.
++All Python code must adhere to `PEP8 <https://peps.python.org/pep-0008/>`_. We use `ruff <https://docs.astral.sh/ruff/>`_ for linting and formatting which is installed in your development environment with ``pip install -e ".[dev]"``.
+diff --git a/doc/development/roadmap.rst b/doc/development/roadmap.rst
+index 39268101..d8795a76 100644
+--- a/doc/development/roadmap.rst
++++ b/doc/development/roadmap.rst
+@@ -8,7 +8,7 @@ This page describes the future goals of PCNtoolkit.
+ 
+ **Extend longitudinal normative modelling**
+ 
+-* Version 1.4.0 added the z-diff score (`Bučková et al., 2025 <https://elifesciences.org/reviewed-preprints/95823>`_), and the velocity models (z-gain score, thrivelines; `Bayer et al., 2026 (preprint) <https://arxiv.org/abs/2601.07591>`_).
++* Version 1.4.0 added the z-diff score (`Bučková et al., 2025 <https://doi.org/10.7554/eLife.95823>`_), and the velocity models (z-gain score, thrivelines; `Bayer et al., 2026 (preprint) <https://arxiv.org/abs/2601.07591>`_).
+ * Forecast a subject's future z-score from their full visit history (conditional forecasting).
+ * Compute z-gain from all of a subject's visits, not only the last two.
+ * Compute your own correlation matrix.
+diff --git a/doc/getting_started/background.rst b/doc/getting_started/background.rst
+index 6ad91400..68fddb7e 100644
+--- a/doc/getting_started/background.rst
++++ b/doc/getting_started/background.rst
+@@ -6,7 +6,7 @@ PCNtoolkit background
+ What is the PCNtoolkit?
+ ****************************
+ 
+-The **Predictive Clinical Neuroscience (PCN) toolkit** is an open-source Python package for normative modelling. It can work with any tabular data like neuroimaging data (structural and functional MRI, diffusion MRI, MEG, EEG), cognitive scores, or epigenomic data. It is developed and maintained by the `Predictive Clinical Neuroscience lab <https://predictiveclinicalneuroscience.com/>`_ at the `Donders Institute for Brain, Cognition and Behaviour <https://www.ru.nl/donders/>`_.
++The **Predictive Clinical Neuroscience (PCN) toolkit** is an open-source Python package for normative modelling. It can work with any tabular data like neuroimaging data (structural and functional MRI, diffusion MRI, MEG, EEG), cognitive scores, or epigenomic data. It is developed and maintained by the `Predictive Clinical Neuroscience lab <https://predictiveclinicalneuroscience.com/>`_ at the `Donders Institute for Brain, Cognition and Behaviour <https://www.ru.nl/en/donders-institute>`_.
+ 
+ The limitations of case-control studies
+ -----------------------------------------------------
+diff --git a/doc/support/get_help.rst b/doc/support/get_help.rst
+index 0017943d..df0b4d5e 100644
+--- a/doc/support/get_help.rst
++++ b/doc/support/get_help.rst
+@@ -5,7 +5,7 @@ NeuroStars Forum
+ ----------------
+ 
+ Feel free to look for answers or post your questions on
+-`NeuroStars.org <https://neurostars.org/tags/pcntoolkit>`_.
++`NeuroStars.org <https://neurostars.org/tag/pcntoolkit/1106>`_.
+ Please add the tag *pcntoolkit* to your post so that it is
+ easier for others to find it.
+ 
+diff --git a/pcntoolkit/regression_model/hbr.py b/pcntoolkit/regression_model/hbr.py
+index e5fd8b4d..ac9df6d0 100644
+--- a/pcntoolkit/regression_model/hbr.py
++++ b/pcntoolkit/regression_model/hbr.py
+@@ -423,24 +423,33 @@ def transfer(
+         be: xr.DataArray,
+         be_maps: dict[str, dict[str, int]],
+         Y: xr.DataArray,
+-        **kwargs,
++        **kwargs: Any,
+     ) -> HBR:
+         """
+-                Perform transfer learning using existing model as prior.
+-
+-                Parameters
+-                ----------
+-                hbrconf : HBRConf
+-                    Configuration for new model
+-                transferdata : HBRData
+-                    Data for transfer learning
+-                freedom : float
+-                    Parameter controlling influence of prior model (0-1)
+-        x
+-                Returns
+-                -------
+-                HBR
+-                    New model instance with transferred knowledge
++        Perform transfer learning using existing model as prior.
++
++        Parameters
++        ----------
++        X : xr.DataArray
++            Covariate data of the new site(s).
++        be : xr.DataArray
++            Batch effect data of the new site(s).
++        be_maps : dict[str, dict[str, int]]
++            Maps each batch effect level to an integer index.
++        Y : xr.DataArray
++            Response variable data of the new site(s).
++        **kwargs : Any
++            ``freedom`` (float, default 1) sets how far the new model may move
++            away from what the old model learned: 1 keeps the old uncertainty,
++            2 allows twice as much, 0.5 half as much. 
++            
++            Inference settings such as ``draws`` or ``inference_method`` can 
++            also be passed here to replace this model's values for the new fit.
++
++        Returns
++        -------
++        HBR
++            New model instance with transferred knowledge
+         """
+         new_likelihood = self.likelihood.transfer(self.idata, **kwargs)
+         new_hbr_model = HBR(
+diff --git a/pcntoolkit/regression_model/regression_model.py b/pcntoolkit/regression_model/regression_model.py
+index 58e92d60..ce2b116e 100644
+--- a/pcntoolkit/regression_model/regression_model.py
++++ b/pcntoolkit/regression_model/regression_model.py
+@@ -88,10 +88,14 @@ def fit(
+ 
+         Parameters
+         ----------
+-        X: xr.DataArray containing covariates
+-        be: xr.DataArray containing batch effects
+-        be_maps: dictionary of dictionaries mapping batch effect to indices
+-        Y: xr.DataArray containing covariates
++        X : xr.DataArray
++            Covariate data.
++        be : xr.DataArray
++            Batch effect data.
++        be_maps : dict[str, dict[str, int]]
++            Maps each batch effect level to an integer index.
++        Y : xr.DataArray
++            Response variable data.
+ 
+         Returns
+         -------
+@@ -107,9 +111,12 @@ def forward(
+ 
+         Parameters
+         ----------
+-        X: xr.DataArray containing covariates
+-        be: xr.DataArray containing batch effects
+-        Y: xr.DataArray containing covariates
++        X : xr.DataArray
++            Covariate data.
++        be : xr.DataArray
++            Batch effect data.
++        Y : xr.DataArray
++            Response variable data.
+ 
+         Returns
+         -------
+@@ -126,9 +133,12 @@ def backward(
+ 
+         Parameters
+         ----------
+-        X: xr.DataArray containing covariates
+-        be: xr.DataArray containing batch effects
+-        Y: xr.DataArray containing covariates
++        X : xr.DataArray
++            Covariate data.
++        be : xr.DataArray
++            Batch effect data.
++        Z : xr.DataArray
++            Z-scores to convert back to response variable values.
+ 
+         Returns
+         -------
+@@ -155,10 +165,14 @@ def transfer(
+ 
+         Parameters
+         ----------
+-        X: xr.DataArray containing covariates
+-        be: xr.DataArray containing batch effects
+-        be_maps: dictionary of dictionaries mapping batch effect to indices
+-        Y: xr.DataArray containing covariates
++        X : xr.DataArray
++            Covariate data.
++        be : xr.DataArray
++            Batch effect data.
++        be_maps : dict[str, dict[str, int]]
++            Maps each batch effect level to an integer index.
++        Y : xr.DataArray
++            Response variable data.
+ 
+         Returns
+         -------

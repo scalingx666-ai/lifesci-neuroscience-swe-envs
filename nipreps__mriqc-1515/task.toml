@@ -1,0 +1,65 @@
+version = "1.0"
+
+[task]
+name = "default/nipreps__mriqc-1515"
+description = "ENH: Reserve only the processes the slowest DWI nodes use"
+
+[metadata]
+difficulty = "medium"
+category = "bugfix"
+keywords = [
+    "mriqc",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "nipreps/mriqc"
+ref = "587123f3409329b404cbc4e2223c8750b88bc322"
+reference = "https://github.com/nipreps/mriqc/pull/1515"
+source_access = "auto"
+built_at = "2026-11-14T06:10:19.849772+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:e687fbadc480d8c0d7c31e72d6adffdfa324b95b679c76c2956c9f2cdf296122"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-13T10:22:18Z"
+diff_format = "unified"
+context_files = [
+    "mriqc/workflows/anatomical/base.py",
+    "mriqc/workflows/diffusion/base.py",
+    "mriqc/workflows/functional/base.py",
+    "mriqc/workflows/shared.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 26
+difficulty = "medium"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

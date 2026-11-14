@@ -1,0 +1,13 @@
+diff --git a/netneurotools/plotting/pyvista_plotters.py b/netneurotools/plotting/pyvista_plotters.py
+index 4b83e7b..d2c181a 100644
+--- a/netneurotools/plotting/pyvista_plotters.py
++++ b/netneurotools/plotting/pyvista_plotters.py
+@@ -893,7 +893,7 @@ def _select_hemi(files):
+     elif parc_str == 'mmpall':
+         atlas = fetch_mmpall(version=template)
+         atlas = relabel_gifti((atlas[0], atlas[1]))
+-        return _select_hemi(atlas[key])
++        return _select_hemi(atlas)
+ 
+     # else, the `parcellation` string is a normal path (presumably)
+     return parcellation

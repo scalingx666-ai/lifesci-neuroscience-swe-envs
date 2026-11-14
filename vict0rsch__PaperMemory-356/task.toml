@@ -1,0 +1,72 @@
+version = "1.0"
+
+[task]
+name = "default/vict0rsch__PaperMemory-356"
+description = "Restore detection of proxy and PDF-viewer wrapped paper URLs"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "PaperMemory",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "vict0rsch/PaperMemory"
+ref = "f786584f47387d173a720fe3fa3376fae9a8a104"
+reference = "https://github.com/vict0rsch/PaperMemory/pull/356"
+source_access = "auto"
+built_at = "2026-11-14T06:09:33.859394+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:f358242259d41dec88b14f1b7c1dde960899c6ba48f4e4d0d2245af637d70675"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-12T00:21:21Z"
+diff_format = "unified"
+context_files = [
+    ".github/workflows/submit.yml",
+    "contributing.md",
+    "package-lock.json",
+    "package.json",
+    "src/background/background.js",
+    "src/shared/js/utils/paper.js",
+    "src/shared/js/utils/sources/index.js",
+    "src/shared/js/utils/urls.js",
+    "system-architecture.md",
+    "test/test-utils.js",
+    "wxt.config.js",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 4374
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

@@ -1,0 +1,26 @@
+diff --git a/chapter6/tot.ipynb b/chapter6/tot.ipynb
+index 8e0f54e..0c07beb 100644
+--- a/chapter6/tot.ipynb
++++ b/chapter6/tot.ipynb
+@@ -95,7 +95,7 @@
+       },
+       "outputs": [],
+       "source": [
+-        "from langchain.agents import load_tools\n",
++        "from langchain_community.agent_toolkits.load_tools import load_tools\n",
+         "from langgraph.prebuilt import create_react_agent\n",
+         "\n",
+         "llm = ChatGoogleGenerativeAI(model=\"gemini-2.5-flash\")\n",
+@@ -357,9 +357,9 @@
+         "      \"type\": \"STRING\",\n",
+         "      \"enum\": [str(i+1) for i in range(len(all_candidates))]}\n",
+         "  llm_enum = ChatGoogleGenerativeAI(\n",
+-        "      model=\"gemini-2.5-flash\", response_mime_type=\"text/x.enum\",\n",
+-        "      response_schema=response_schema)\n",
+-        "  result = (prompt_voting | llm_enum | StrOutputParser()).invoke(\n",
++        "      model=\"gemini-2.5-flash\",\n",
++        "    ).with_structured_output(response_schema)\n",
++        "  result = (prompt_voting | llm_enum).invoke(\n",
+         "      {\"candidates\": \"\\n\".join(all_candidates), \"task\": state[\"task\"]}\n",
+         "  )\n",
+         "  return {\"best_candidate\": candidates[int(result)-1]}\n"

@@ -1,0 +1,68 @@
+version = "1.0"
+
+[task]
+name = "default/vict0rsch__PaperMemory-358"
+description = "Release 1.2.0"
+
+[metadata]
+difficulty = "medium"
+category = "bugfix"
+keywords = [
+    "PaperMemory",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "vict0rsch/PaperMemory"
+ref = "d6bbea7375cfe64b99d3cf9a62d70244d09a7693"
+reference = "https://github.com/vict0rsch/PaperMemory/pull/358"
+source_access = "auto"
+built_at = "2026-11-14T06:09:30.641791+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:15fef4cc73b296d29933b5095c70f88d873b40b95bddae98548525aa82f75045"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-11-12T11:06:27Z"
+diff_format = "unified"
+context_files = [
+    "Readme.md",
+    "docs/about.md",
+    "docs/features.md",
+    "docs/getting-started.md",
+    "package-lock.json",
+    "package.json",
+    "src/popup/html/modals/whatsnew.html",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 79
+difficulty = "medium"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

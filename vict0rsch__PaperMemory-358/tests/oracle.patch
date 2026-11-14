@@ -1,0 +1,177 @@
+diff --git a/Readme.md b/Readme.md
+index c2af902d..e5b16e0f 100644
+--- a/Readme.md
++++ b/Readme.md
+@@ -26,8 +26,8 @@
+ 
+ [![](https://img.shields.io/chrome-web-store/stars/hmebhknlgddhfbbdhgplnillngljgmdi)](https://chrome.google.com/webstore/detail/paper-memory/hmebhknlgddhfbbdhgplnillngljgmdi)
+ [![](https://img.shields.io/badge/buy%20me-a%20coffee%20%E2%98%95%EF%B8%8F-FFDD03)](https://www.buymeacoffee.com/vict0rsch)
+-[![](https://img.shields.io/badge/Source%20%5BWIP%5D-v1.0.3-important)](https://github.com/vict0rsch/PaperMemory)
+-[![](https://img.shields.io/badge/Release-v1.0.3-A41716)](https://github.com/vict0rsch/PaperMemory/tree/1.0.3)
++[![](https://img.shields.io/badge/Source%20%5BWIP%5D-v1.2.0-important)](https://github.com/vict0rsch/PaperMemory)
++[![](https://img.shields.io/badge/Release-v1.2.0-A41716)](https://github.com/vict0rsch/PaperMemory/tree/1.2.0)
+ 
+ <br/>
+ 
+@@ -102,6 +102,11 @@ Share ideas 💡 in [issues](https://github.com/vict0rsch/PaperMemory/issues) an
+ - Oxford University Press
+ - HAL Archives ouvertes
+ - Royal Society of Chemistry
++- American Institute of Physics (AIP)
++- Cell
++- ChemRxiv
++- INSPIRE - High Energy Physics (IHEP)
++- Journal of Machine Learning Research (JMLR)
+ - [Sci-Hub](https://papermemory.org/faq/#can-i-reference-my-pdf-in-papermemory)
+ - [Add more](https://github.com/vict0rsch/PaperMemory/issues/13)
+ 
+diff --git a/docs/about.md b/docs/about.md
+index 827474d5..cac0e0c9 100644
+--- a/docs/about.md
++++ b/docs/about.md
+@@ -26,11 +26,13 @@ I'm always looking for feedback, beta-testers or help with the development (:sim
+ As much as possible, I try to avoid using external libraries. But I'll acknowledge:
+ 
+ - [Tabler Icons](https://tabler-icons.io/)
+-- [Rollup](https://rollupjs.org/)
++- [WXT](https://wxt.dev/)
++- [Vite](https://vite.dev/)
+ - [Mocha](https://mochajs.org/)
+ - [Gifox](https://gifox.app/)
+ - [Shottr](https://shottr.cc/)
+-- [Puppeteer](https://pptr.dev/)
++- [cloakbrowser](https://github.com/CloakHQ/cloakbrowser)
++- [Puppeteer](https://pptr.dev/) (`puppeteer-core`)
+ - [Material for Mkdocs](https://squidfunk.github.io/mkdocs-material/)
+ 
+ Fun fact: make pretty commits with [`gitmopy`](https://github.com/vict0rsch/gitmopy)
+diff --git a/docs/features.md b/docs/features.md
+index 0b891740..fbbe9962 100644
+--- a/docs/features.md
++++ b/docs/features.md
+@@ -113,6 +113,11 @@ Whenever possible, PaperMemory queries the API the provider offers. If they don'
+     * MDPI
+     * Oxford University Press
+     * HAL Archives ouvertes
++    * American Institute of Physics (AIP)
++    * Cell
++    * ChemRxiv
++    * INSPIRE - High Energy Physics (IHEP)
++    * Journal of Machine Learning Research (JMLR)
+     * [Sci-Hub](./faq.md#can-i-reference-my-pdf-in-papermemory)
+     * [Add more](https://github.com/vict0rsch/PaperMemory/issues/13)
+ 
+diff --git a/docs/getting-started.md b/docs/getting-started.md
+index 0f3948df..a10fc54b 100644
+--- a/docs/getting-started.md
++++ b/docs/getting-started.md
+@@ -30,17 +30,21 @@ icon: octicons/rocket-16
+ === "Chrome / Brave / Edge"
+ 
+     * Clone the repo
++    * Install dependencies with `npm install` (requires [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), Node.js 22+ recommended)
++    * Build the extension with `npm run build:chrome`
+     * Go to Chrome/Brave's extension manager `chrome://extensions/`
+     * Enable developer mode (top right)
+-    * Click on the "Load unpackaged extension" button
+-    * Select the downloaded folder
++    * Click on the "Load unpacked" button
++    * Select the `dist/chrome-mv3/` folder
+ 
+ === "Firefox"
+ 
+     * Clone the repo
++    * Install dependencies with `npm install` (requires [`npm`](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), Node.js 22+ recommended)
++    * Build the extension with `npm run build:firefox`
+     * Go to `about:debugging#/runtime/this-firefox` in the address bar
+     * Click on "Load Temporary Add-on"
+-    * Select the `manifest.json` file in the `PaperMemory/` folder
++    * Select the `manifest.json` file in the `dist/firefox-mv2/` folder
+     * __NB__ this is a temporary install you may have to re-do this loading operation if you close Firefox
+ 
+ !!! tip
+diff --git a/package-lock.json b/package-lock.json
+index 29078634..bac8fe00 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,12 @@
+ {
+     "name": "papermemory",
+-    "version": "1.1.1",
++    "version": "1.2.0",
+     "lockfileVersion": 3,
+     "requires": true,
+     "packages": {
+         "": {
+             "name": "papermemory",
+-            "version": "1.1.1",
++            "version": "1.2.0",
+             "hasInstallScript": true,
+             "license": "MIT",
+             "dependencies": {
+diff --git a/package.json b/package.json
+index 29752cdb..af5791e7 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "papermemory",
+-    "version": "1.1.1",
++    "version": "1.2.0",
+     "description": "N/A",
+     "type": "module",
+     "scripts": {
+diff --git a/src/popup/html/modals/whatsnew.html b/src/popup/html/modals/whatsnew.html
+index 24d72cfb..6e9b004b 100644
+--- a/src/popup/html/modals/whatsnew.html
++++ b/src/popup/html/modals/whatsnew.html
+@@ -3,6 +3,49 @@ <h3 style="margin-bottom: 0px">What's new</h3>
+     <ul>
+         <li>
+             <strong>Current: </strong>
++            <a href="https://github.com/vict0rsch/PaperMemory/releases/tag/1.2.0"
++                >1.2.0</a
++            >
++            <em>(2026-11-12)</em>
++            <ul>
++                <li>
++                    [feature] Detect papers opened through a proxy URL or a PDF viewer
++                    (e.g. another extension's) and save the underlying paper (proxies
++                    that rewrite the host name are not supported)
++                </li>
++                <li>
++                    [feature] Re-parsing an already saved paper no longer overwrites its
++                    tags, visit count, add date or favorite status
++                </li>
++                <li>
++                    [dev] Fix paper parsing for ACS, RSC (new platform), ScienceDirect,
++                    ChemRxiv, IJCAI, Cell and PMLR
++                </li>
++                <li>
++                    [dev] Detect paper sources from the website's host only, removing
++                    false detections; http:// ChemRxiv and OUP URLs are now detected
++                </li>
++                <li>
++                    [dev] Fix the PDF tab title not being set the first time an ACS/RSC
++                    paper is captured
++                </li>
++                <li>
++                    [dev] Fix race conditions and data-integrity issues when updating or
++                    de-duplicating stored papers
++                </li>
++                <li>
++                    [dev] Refactor the codebase to ES modules, built with WXT (Vite) for
++                    Chrome and Firefox; integration tests now run on cloakbrowser
++                </li>
++                <li>[dev] Add a privacy policy page to the docs</li>
++                <li>[dev] Rebuild the tag input without the select2 library</li>
++                <li>
++                    [deprecation] Automatic code repository discovery through Papers
++                    with Code is disabled since its API was discontinued
++                </li>
++            </ul>
++        </li>
++        <li>
+             <a href="https://github.com/vict0rsch/PaperMemory/releases/tag/1.0.3"
+                 >1.0.3</a
+             >

@@ -1,0 +1,60 @@
+{
+  "slug": "neuroscience",
+  "title": "Neuroscience & Neuroimaging",
+  "candidates": 632,
+  "clean": 310,
+  "final": 200,
+  "cap": 200,
+  "min_star": 50,
+  "active_since": "2023-01-01",
+  "active_all": true,
+  "non_archived_all": true,
+  "star_buckets": {
+    ">=1000": 25,
+    "500-999": 33,
+    "200-499": 72,
+    "100-199": 70
+  },
+  "top10": [
+    {
+      "repo": "K-Dense-AI/scientific-agent-skills",
+      "stars": 57086
+    },
+    {
+      "repo": "BrainJS/brain.js",
+      "stars": 14856
+    },
+    {
+      "repo": "DEAP/deap",
+      "stars": 6462
+    },
+    {
+      "repo": "Ar9av/obsidian-wiki",
+      "stars": 3724
+    },
+    {
+      "repo": "mne-tools/mne-python",
+      "stars": 3592
+    },
+    {
+      "repo": "tirthajyoti/Data-science-best-resources",
+      "stars": 3235
+    },
+    {
+      "repo": "FreedomIntelligence/OpenClaw-Medical-Skills",
+      "stars": 3107
+    },
+    {
+      "repo": "Slicer/Slicer",
+      "stars": 2725
+    },
+    {
+      "repo": "psychopy/psychopy",
+      "stars": 2128
+    },
+    {
+      "repo": "little-book-of/linear-algebra",
+      "stars": 2001
+    }
+  ]
+}

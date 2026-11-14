@@ -1,0 +1,72 @@
+version = "1.0"
+
+[task]
+name = "default/K-Dense-AI__scientific-agent-skills-262"
+description = "Add companion identifier APIs to ontology-term-resolution"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "scientific-agent-skills",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "K-Dense-AI/scientific-agent-skills"
+ref = "515742b7ed522c78f19bb9b61f346a0435785302"
+reference = "https://github.com/K-Dense-AI/scientific-agent-skills/pull/262"
+source_access = "auto"
+built_at = "2026-11-14T05:22:29.821298+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:444afe0663c1c9db162b023b4a256984209ec7d3b89c4a51de378fd3429ea81d"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-09-12T02:09:22Z"
+diff_format = "unified"
+context_files = [
+    "skills/ontology-term-resolution/SKILL.md",
+    "skills/ontology-term-resolution/references/companion-apis.md",
+    "skills/ontology-term-resolution/references/curation-rules.md",
+    "skills/ontology-term-resolution/references/ols4-api.md",
+    "skills/ontology-term-resolution/references/ontology-registry.md",
+    "skills/ontology-term-resolution/scripts/id_client.py",
+    "skills/ontology-term-resolution/scripts/lookup_prefix.py",
+    "skills/ontology-term-resolution/scripts/map_terms.py",
+    "skills/ontology-term-resolution/scripts/ols_client.py",
+    "skills/ontology-term-resolution/scripts/zooma_client.py",
+    "tests/ontology-term-resolution/test_scripts.py",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 1485
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

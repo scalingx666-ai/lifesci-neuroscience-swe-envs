@@ -1,0 +1,62 @@
+version = "1.0"
+
+[task]
+name = "default/trendscenter__gift-33"
+description = "Update icatb_run_dfnc.m"
+
+[metadata]
+difficulty = "small"
+category = "bugfix"
+keywords = [
+    "gift",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "trendscenter/gift"
+ref = "14c0f9f16c0aa6d2a201551bf1d5f52bfae49308"
+reference = "https://github.com/trendscenter/gift/pull/33"
+source_access = "auto"
+built_at = "2026-11-14T06:16:31.559509+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:9f920f4ad8ecb3971a6c5eff7be1b85f98f706ad29b3ae4556b9993fe2265ed6"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2025-08-06T20:57:22Z"
+diff_format = "unified"
+context_files = [
+    "GroupICAT/icatb/icatb_helper_functions/icatb_run_dfnc.m",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 6
+difficulty = "small"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

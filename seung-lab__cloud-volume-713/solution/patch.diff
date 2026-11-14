@@ -1,0 +1,151 @@
+diff --git a/cloudvolume/datasource/precomputed/image/rx.py b/cloudvolume/datasource/precomputed/image/rx.py
+index ad04c2e1..889b10ab 100644
+--- a/cloudvolume/datasource/precomputed/image/rx.py
++++ b/cloudvolume/datasource/precomputed/image/rx.py
+@@ -127,7 +127,7 @@ def download_sharded(
+         renderbuffer[:] = int(img3d[0,0,0,0]) != background_color
+       else:
+         renderbuffer[:] = img3d
+-    elif renumber:
++    elif renumber and renderbuffer.dtype != bool:
+       if img3d is None:
+         img_labels = [ background_color ]
+       else:
+@@ -347,7 +347,7 @@ def process_renumber(img3d, bbox):
+         shade(renderbuffer, requested_bbox, img3d, bbox)
+ 
+     fn = process
+-    if renumber and not (use_file or use_shared_memory):
++    if renumber and not (use_file or use_shared_memory or (label is not None)):
+       fn = process_renumber  
+ 
+     download_chunks_threaded(
+diff --git a/cloudvolume/frontends/graphene.py b/cloudvolume/frontends/graphene.py
+index bb5d536b..03a62505 100644
+--- a/cloudvolume/frontends/graphene.py
++++ b/cloudvolume/frontends/graphene.py
+@@ -11,6 +11,7 @@
+ import requests
+ import sys
+ 
++from crackle import CrackleArray
+ import dateutil.parser
+ import fastremap
+ import numpy as np
+@@ -500,6 +501,7 @@ def download(
+     renumber:bool = False, 
+     coord_resolution:Optional[Sequence[int]] = None,
+     label:Optional[int] = None,
++    crackle:bool = False,
+   ):
+     """
+     Downloads base segmentation and optionally agglomerates
+@@ -542,6 +544,7 @@ def download(
+         contained by the image data type and leave zero as is.
+     label: similar to segids, but for compatibility with Precomputed
+       decodes a to binary image.
++    crackle: return the result as a crackle compressed array
+ 
+     Returns: img as a VolumeCutout
+     """
+@@ -591,7 +594,8 @@ def download(
+       mip=mip, 
+       parallel=parallel, 
+       renumber=renumber,
+-      label=(label if direct_binary_image else None)
++      label=(label if direct_binary_image else None),
++      crackle=crackle,
+     )
+     if direct_binary_image:
+       if renumber_return:
+@@ -611,7 +615,8 @@ def download(
+         label=label,
+         bbox=mip0_bbox,
+       )
+-      img = VolumeCutout.from_volume(self.meta, mip, img, bbox)
++      if not isinstance(img, CrackleArray):
++        img = VolumeCutout.from_volume(self.meta, mip, img, bbox)
+       if label is not None and not preserve_zeros:
+         return img
+ 
+@@ -627,10 +632,13 @@ def download(
+       leaves = self.get_leaves(segid, mip0_bbox, 0)
+       remapping.update({ leaf: segid for leaf in leaves })
+     
+-    # Issue #434: Do not write img = fastremap.FN(in_place=True) as this allows
+-    # the underlying buffer to get garbage collected. Make sure to carefully
+-    # manage the buffer's references when making any changes.
+-    fastremap.remap(img, remapping, preserve_missing_labels=True, in_place=True)
++    if isinstance(img, CrackleArray):
++      img.remap(remapping, preserve_missing_labels=True, in_place=True)
++    else:
++      # Issue #434: Do not write img = fastremap.FN(in_place=True) as this allows
++      # the underlying buffer to get garbage collected. Make sure to carefully
++      # manage the buffer's references when making any changes.
++      fastremap.remap(img, remapping, preserve_missing_labels=True, in_place=True)
+ 
+     mask_value = 0
+     if preserve_zeros:
+@@ -640,7 +648,11 @@ def download(
+ 
+       segids.append(0)
+ 
+-    fastremap.mask_except(img, segids, in_place=True, value=mask_value)
++    if isinstance(img, CrackleArray):
++      img.mask_except(img, segids, in_place=True, value=mask_value)
++    else:
++      fastremap.mask_except(img, segids, in_place=True, value=mask_value)
++
+     if renumber_return:
+       return img, renumber_remap
+     return img
+@@ -654,7 +666,7 @@ def agglomerate_cutout(
+     label:Optional[int] = None,
+     bbox:Optional[Bbox] = None,
+     mip:Optional[int] = None, # mip 0 bbox
+-  ):
++  ) -> np.ndarray|CrackleArray:
+     """
+     Remap a graphene volume to the indicidated layer ids (default root ids). 
+     This creates a flat segmentation.
+@@ -667,19 +679,37 @@ def agglomerate_cutout(
+       else:
+         return img
+ 
+-    labels = fastremap.unique(img)
++    if isinstance(img, CrackleArray):
++      labels = img.labels()
++    else:
++      labels = fastremap.unique(img)
++
+     if labels.size and labels[0] == 0:
+       labels = labels[1:]
+ 
+     if label is not None:
+       watershed_domains = list(self.get_leaves(label, bbox, mip=0, stop_layer=None))
+-      fastremap.mask_except(img, watershed_domains, in_place=True, value=0)
++
++      if isinstance(img, CrackleArray):
++        img = img.mask_except(watershed_domains, value=0)
++      else:
++        fastremap.mask_except(img, watershed_domains, in_place=True, value=0)
++      
+       del watershed_domains
+       return img > 0
+     else:
+       roots = self.get_roots(labels, timestamp=timestamp, binary=True, stop_layer=stop_layer)
+       mapping = { segid: root for segid, root in zip(labels, roots) }
+-      return fastremap.remap(img, mapping, preserve_missing_labels=True, in_place=in_place)
++      
++      if isinstance(img, CrackleArray):
++        return img.remap(mapping, preserve_missing_labels=True)
++      else:
++        return fastremap.remap(
++          img,
++          mapping, 
++          preserve_missing_labels=True,
++          in_place=in_place,
++        )
+ 
+   def coordinate_indexing(self, slices):
+     res = super().coordinate_indexing(slices)

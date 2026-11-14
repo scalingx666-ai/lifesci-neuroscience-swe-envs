@@ -1,0 +1,158 @@
+diff --git a/mriqc/workflows/anatomical/base.py b/mriqc/workflows/anatomical/base.py
+index 256cbcbd..34fc56c9 100644
+--- a/mriqc/workflows/anatomical/base.py
++++ b/mriqc/workflows/anatomical/base.py
+@@ -279,8 +279,6 @@ def spatial_normalization(name='SpatialNormalization'):
+             generate_report=True,
+         ),
+         name='SpatialNormalization',
+-        # Request all MultiProc processes when ants_nthreads > n_procs
+-        num_threads=config.nipype.omp_nthreads,
+         mem_gb=3,
+     )
+     if config.workflow.species.lower() == 'human':
+@@ -406,7 +404,6 @@ def _format_tpm_names(in_files, fname_string=None):
+         ),
+         name='segmentation',
+         mem_gb=5,
+-        num_threads=config.nipype.omp_nthreads,
+     )
+ 
+     # fmt: off
+@@ -571,7 +568,6 @@ def _select_wm(inlist):
+             function=_enhance,
+         ),
+         name='Enhance',
+-        num_threads=omp_nthreads,
+     )
+     enhance.inputs.seed = config.seeds.numpy
+ 
+@@ -582,7 +578,6 @@ def _select_wm(inlist):
+             function=image_gradient,
+         ),
+         name='Grad',
+-        num_threads=omp_nthreads,
+     )
+     thresh = pe.Node(
+         niu.Function(
+@@ -591,7 +586,6 @@ def _select_wm(inlist):
+             function=gradient_threshold,
+         ),
+         name='GradientThreshold',
+-        num_threads=omp_nthreads,
+     )
+     if config.workflow.species != 'human':
+         gradient.inputs.sigma = 3.0
+diff --git a/mriqc/workflows/diffusion/base.py b/mriqc/workflows/diffusion/base.py
+index 7f43453d..6356a6f0 100644
+--- a/mriqc/workflows/diffusion/base.py
++++ b/mriqc/workflows/diffusion/base.py
+@@ -84,8 +84,7 @@ def dmri_qc_workflow(name='dwiMRIQC'):
+     from mriqc.messages import BUILDING_WORKFLOW
+     from mriqc.workflows.shared import synthstrip_wf as dmri_bmsk_workflow
+ 
+-    # Enable if necessary
+-    # mem_gb = config.workflow.biggest_file_gb['dwi']
++    mem_gb = config.workflow.biggest_file_gb['dwi']
+     dataset = config.workflow.inputs['dwi']
+     metadata = config.workflow.inputs_metadata['dwi']
+     entities = config.workflow.inputs_entities['dwi']
+@@ -145,11 +144,11 @@ def dmri_qc_workflow(name='dwiMRIQC'):
+         n_procs=max(1, config.nipype.nprocs // 2),
+     )
+ 
++    # 3dvolreg runs on a single thread, so it reserves one process (the default)
+     hmc_b0 = pe.Node(
+         Volreg(args='-Fourier -twopass', zpad=4, outputtype='NIFTI_GZ'),
+         name='hmc_b0',
+         mem_gb=3.0,
+-        n_procs=config.nipype.nprocs,
+     )
+ 
+     # Calculate brainmask
+@@ -184,7 +183,8 @@ def dmri_qc_workflow(name='dwiMRIQC'):
+             nthreads=config.nipype.omp_nthreads,
+         ),
+         name='denoise',
+-        n_procs=config.nipype.nprocs,
++        n_procs=config.nipype.omp_nthreads,
++        mem_gb=mem_gb * 6,  # 0.64 GB for a 0.12 GB series
+     )
+     drift = pe.Node(
+         CorrectSignalDrift(),
+@@ -197,11 +197,11 @@ def dmri_qc_workflow(name='dwiMRIQC'):
+         n_procs=max(1, config.nipype.nprocs // 2),
+     )
+ 
+-    # Fit DTI/DKI model
++    # Fit DTI/DKI model (single-threaded)
+     dwimodel = pe.Node(
+         DiffusionModel(),
+         name='dwimodel',
+-        n_procs=config.nipype.nprocs,
++        mem_gb=mem_gb * 10,  # 1.2 GB for a 0.12 GB series
+     )
+ 
+     # Calculate CC mask
+@@ -489,12 +489,11 @@ def hmc_workflow(name='dMRI_HMC'):
+         name='outputnode',
+     )
+ 
+-    # calculate hmc parameters
++    # calculate hmc parameters (3dvolreg runs on a single thread)
+     hmc = pe.Node(
+         Volreg(args='-Fourier -twopass', zpad=4, outputtype='NIFTI_GZ'),
+         name='motion_correct',
+         mem_gb=3.0,
+-        n_procs=config.nipype.nprocs,
+     )
+ 
+     bvec_rot = pe.Node(RotateVectors(), name='bvec_rot')
+@@ -551,7 +550,6 @@ def epi_mni_align(name='SpatialNormalization'):
+ 
+     # Get settings
+     testing = config.execution.debug
+-    n_procs = config.nipype.nprocs
+     ants_nthreads = config.nipype.omp_nthreads
+ 
+     workflow = pe.Workflow(name=name)
+@@ -578,7 +576,6 @@ def epi_mni_align(name='SpatialNormalization'):
+             template=config.workflow.template_id,
+         ),
+         name='EPI2MNI',
+-        num_threads=n_procs,
+         mem_gb=3,
+     )
+ 
+diff --git a/mriqc/workflows/functional/base.py b/mriqc/workflows/functional/base.py
+index 4d4eb1ed..0def1186 100644
+--- a/mriqc/workflows/functional/base.py
++++ b/mriqc/workflows/functional/base.py
+@@ -634,7 +634,6 @@ def epi_mni_align(name='SpatialNormalization'):
+ 
+     # Get settings
+     testing = config.execution.debug
+-    n_procs = config.nipype.nprocs
+     ants_nthreads = config.nipype.omp_nthreads
+ 
+     workflow = pe.Workflow(name=name)
+@@ -661,7 +660,6 @@ def epi_mni_align(name='SpatialNormalization'):
+             template=config.workflow.template_id,
+         ),
+         name='EPI2MNI',
+-        num_threads=n_procs,
+         mem_gb=3,
+     )
+ 
+diff --git a/mriqc/workflows/shared.py b/mriqc/workflows/shared.py
+index 92ac77cc..52dcdb04 100644
+--- a/mriqc/workflows/shared.py
++++ b/mriqc/workflows/shared.py
+@@ -66,7 +66,6 @@ def synthstrip_wf(name='synthstrip_wf', omp_nthreads=None):
+     synthstrip = pe.Node(
+         SynthStrip(num_threads=omp_nthreads),
+         name='synthstrip',
+-        num_threads=omp_nthreads,
+         # The model weights alone take several GB, so the default 0.25 lets the
+         # scheduler run too many at once
+         mem_gb=6,

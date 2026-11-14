@@ -1,0 +1,62 @@
+version = "1.0"
+
+[task]
+name = "default/aramis-lab__clinica-1736"
+description = "Update poetry dependencies"
+
+[metadata]
+difficulty = "large"
+category = "bugfix"
+keywords = [
+    "clinica",
+    "pr_diff",
+]
+
+[metadata.repo2env]
+pipeline = "pr_diff"
+pipeline_version = "0.3.0"
+repo = "aramis-lab/clinica"
+ref = "bd7d83c1e772ad7b9cdc85901f18d3558d754427"
+reference = "https://github.com/aramis-lab/clinica/pull/1736"
+source_access = "auto"
+built_at = "2026-11-14T06:11:19.440361+00:00"
+reward_kinds = [
+    "diff_similarity",
+]
+spec_version = "0.2.0"
+content_hash = "sha256:b930ecf4c37d03f97fcb731a0d032cdafdb5a91192faa0eb36e41c405750e98e"
+
+[metadata.repo2env.pr_diff]
+pr_merged_at = "2026-10-02T13:34:07Z"
+diff_format = "unified"
+context_files = [
+    "poetry.lock",
+]
+
+[metadata.repo2env.reward_calibration]
+baseline_reward = 0.0
+loc_changed = 1435
+difficulty = "large"
+
+[metadata.repo2env.evaluation]
+schema_version = "1"
+status = "unverified"
+stage = "generation"
+reason_codes = [
+    "validation_not_run",
+]
+detail = "Generated task; validation has not been established."
+provenance = "unknown"
+evidence = []
+
+[metadata.repo2env.reproducibility]
+mode = "local_only"
+image_ref = "python:3.12-slim"
+image_tag = "python:3.12-slim"
+image_visibility = "private"
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 300.0

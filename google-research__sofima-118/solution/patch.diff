@@ -1,0 +1,124 @@
+diff --git a/flow_field.py b/flow_field.py
+index 3b1f963..b1e17d9 100644
+--- a/flow_field.py
++++ b/flow_field.py
+@@ -359,7 +359,7 @@ def _masked_mean(source, mask):
+       + post_batch.shape[-len(patch_size) :]
+   ) // 2 - 1
+   return (  # pyrefly: ignore[bad-return]
+-      center_offset,  # pytype: disable=bad-return-type  # jax-ndarray
++      center_offset,
+       masked_xcorr(
+           pre_batch - pre_mean,
+           post_batch - post_mean,
+@@ -435,7 +435,7 @@ def batched_xcorr_peaks(
+       xcorr,
+       center_offset,  # pyrefly: ignore[bad-argument-type]
+       min_distance,
+-      threshold_rel,  # pytype: disable=wrong-arg-types  # jax-ndarray
++      threshold_rel,
+       peak_radius,
+   )
+   return peaks
+@@ -574,7 +574,7 @@ def flow_field(
+ 
+     if pre_mask is not None:
+       s = geom_utils.query_integral_image(
+-          _integral_image(pre_mask), patch_size, step  # pyrefly: ignore[bad-argument-type]
++          _integral_image(pre_mask), patch_size, step
+       )
+       m = (s / np.prod(patch_size) >= max_masked)[out_sel]
+       selection_mask[m] = False
+@@ -582,7 +582,7 @@ def flow_field(
+ 
+     if post_mask is not None:
+       s = geom_utils.query_integral_image(
+-          _integral_image(post_mask), post_patch_size, step  # pyrefly: ignore[bad-argument-type]
++          _integral_image(post_mask), post_patch_size, step
+       )
+       m = (s / np.prod(post_patch_size) >= max_masked)[out_sel]
+       selection_mask[m] = False
+diff --git a/mesh.py b/mesh.py
+index f8c4d5b..0cbf2f2 100644
+--- a/mesh.py
++++ b/mesh.py
+@@ -276,7 +276,7 @@ def elastic_mesh_3d(
+     fn = jnp.pad(f, pad_neg)
+     f_tot -= fn
+ 
+-  return f_tot  # pytype: disable=bad-return-type  # jax-ndarray
++  return f_tot  # pyrefly: ignore[bad-return]
+ 
+ 
+ @dataclasses.dataclass(frozen=True)
+diff --git a/processor/mesh.py b/processor/mesh.py
+index 44e8dee..0ddb532 100644
+--- a/processor/mesh.py
++++ b/processor/mesh.py
+@@ -220,7 +220,7 @@ def compute_ref_mesh_multiz(
+       curr_flow[1, ...][~m] = np.nan
+ 
+       curr_flow = np.array(
+-          map_utils.compose_maps_fast(  # pytype: disable=wrong-arg-types  # jax-ndarray
++          map_utils.compose_maps_fast(
+               curr_flow,  # pyrefly: ignore[bad-argument-type]
+               box.start[::-1],  # pyrefly: ignore[bad-argument-type]
+               stride,
+@@ -264,7 +264,7 @@ def compute_ref_mesh(
+       flow_utils.apply_mask(ref_mesh, mask)
+ 
+     flow = np.array(
+-        map_utils.compose_maps_fast(  # pytype: disable=wrong-arg-types  # jax-ndarray
++        map_utils.compose_maps_fast(
+             flow,  # pyrefly: ignore[bad-argument-type]
+             ref_box.start[::-1],  # pyrefly: ignore[bad-argument-type]
+             stride,
+@@ -459,7 +459,7 @@ def relax_mesh(
+ 
+     logging.info('Starting mesh relaxation with: %r', config)
+ 
+-    x, e_kin, num_steps = mesh_lib.relax_mesh(x, prev, integration_config)  # pytype: disable=wrong-arg-types  # jax-ndarray
++    x, e_kin, num_steps = mesh_lib.relax_mesh(x, prev, integration_config)  # pyrefly: ignore[bad-argument-type, bad-assignment]
+     x = np.array(x)
+     orig_x = x.copy()
+ 
+@@ -481,7 +481,7 @@ def relax_mesh(
+     start_x = np.zeros_like(x)
+     start_x = self.maybe_update_init_state(start_x, prev, config.options)
+ 
+-    x, _, prep_steps = mesh_lib.relax_mesh(  # pytype: disable=wrong-arg-types  # jax-ndarray
++    x, _, prep_steps = mesh_lib.relax_mesh(  # pyrefly: ignore[bad-assignment]
+         start_x,  # pyrefly: ignore[bad-argument-type]
+         x,  # pyrefly: ignore[bad-argument-type]
+         dataclasses.replace(
+@@ -503,7 +503,7 @@ def relax_mesh(
+     if mask is not None:
+       flow_utils.apply_mask(x, mask)
+ 
+-    x, e_kin2, reg_steps = mesh_lib.relax_mesh(x, prev, integration_config)  # pytype: disable=wrong-arg-types  # jax-ndarray
++    x, e_kin2, reg_steps = mesh_lib.relax_mesh(x, prev, integration_config)  # pyrefly: ignore[bad-argument-type, bad-assignment]
+     x = np.array(x)
+     return (
+         x,
+diff --git a/stitch_elastic.py b/stitch_elastic.py
+index c929110..849e146 100644
+--- a/stitch_elastic.py
++++ b/stitch_elastic.py
+@@ -519,7 +519,7 @@ def _apply_flow(
+     nbor_flow_3d = nbor_flow[:, None, ...]
+     nbor_mesh_3d = nbor_mesh[:, None, ...]
+ 
+-  update = map_utils.compose_maps_fast(  # pytype: disable=wrong-arg-types  # jnp-type
++  update = map_utils.compose_maps_fast(
+       nbor_flow_3d,
+       start,  # pyrefly: ignore[bad-argument-type]
+       stride,
+@@ -601,7 +601,7 @@ def _update_mesh(
+   nbor_mesh = jax.lax.dynamic_index_in_dim(x, nbor_idx, axis=1, keepdims=False)
+   unused = 1
+   # pylint: disable=g-long-lambda
+-  return (  # pytype: disable=bad-return-type  # jax-ndarray
++  return (  # pyrefly: ignore[bad-return]
+       jax.lax.cond(
+           nbor_idx == -1,  # invalid index?
+           lambda _: mesh,  # nothing to update

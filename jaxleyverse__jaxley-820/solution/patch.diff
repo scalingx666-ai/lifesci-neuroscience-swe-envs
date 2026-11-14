@@ -1,0 +1,35 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 73cdd484..9679b5f0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,4 +1,4 @@
+-# 0.15.0
++# 0.14.1
+ 
+ ### 🐛 Bug fixes
+ 
+diff --git a/jaxley/__version__.py b/jaxley/__version__.py
+index 4eb23748..781c37bf 100644
+--- a/jaxley/__version__.py
++++ b/jaxley/__version__.py
+@@ -1,6 +1,6 @@
+ # This file is part of Jaxley, a differentiable neuroscience simulator. Jaxley is
+ # licensed under the Apache License Version 2.0, see <https://www.apache.org/licenses/>
+ 
+-VERSION = (0, 14, 0)
++VERSION = (0, 14, 1)
+ 
+ __version__ = ".".join(map(str, VERSION))
+diff --git a/pyproject.toml b/pyproject.toml
+index 06bc7ae7..952537d3 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
+ 
+ [project]
+ name = "Jaxley"
+-version = "0.14.0"
++version = "0.14.1"
+ description = "Differentiable neuron simulations."
+ authors = [
+     { name = "jaxleyverse", email = "jaxleyverse@gmail.com"},

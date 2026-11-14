@@ -1,0 +1,42 @@
+diff --git a/mesh.py b/mesh.py
+index 2b53fde..f8c4d5b 100644
+--- a/mesh.py
++++ b/mesh.py
+@@ -229,13 +229,13 @@ def elastic_mesh_3d(
+     pad_pos = list(pad_neg)
+     for dim in direction[::-1]:  # zyx
+       if dim == -1:
+-        sel1.append(np.s_[:-1])
+-        sel2.append(np.s_[1:])
++        sel1.append(np.s_[:-1])  # pyrefly: ignore[bad-argument-type]
++        sel2.append(np.s_[1:])  # pyrefly: ignore[bad-argument-type]
+         pad_pos.append((0, 1))
+         pad_neg.append((1, 0))
+       elif dim == 1:
+-        sel1.append(np.s_[1:])
+-        sel2.append(np.s_[:-1])
++        sel1.append(np.s_[1:])  # pyrefly: ignore[bad-argument-type]
++        sel2.append(np.s_[:-1])  # pyrefly: ignore[bad-argument-type]
+         pad_pos.append((1, 0))
+         pad_neg.append((0, 1))
+       elif dim == 0:
+diff --git a/stitch_elastic.py b/stitch_elastic.py
+index 3140a7d..c929110 100644
+--- a/stitch_elastic.py
++++ b/stitch_elastic.py
+@@ -254,11 +254,11 @@ def compute_flow_map(
+       post_sel[1 - axis] = np.s_[:overlap]
+ 
+       if ortho_offset > 0:  # post is shifted down relative to pre
+-        pre_sel[axis] = np.s_[ortho_offset:]
+-        post_sel[axis] = np.s_[:-ortho_offset]
++        pre_sel[axis] = np.s_[ortho_offset:]  # pyrefly: ignore[unsupported-operation]
++        post_sel[axis] = np.s_[:-ortho_offset]  # pyrefly: ignore[unsupported-operation]
+       elif ortho_offset < 0:  # post is shifted up relative to pre
+-        pre_sel[axis] = np.s_[:ortho_offset]
+-        post_sel[axis] = np.s_[-ortho_offset:]
++        pre_sel[axis] = np.s_[:ortho_offset]  # pyrefly: ignore[unsupported-operation]
++        post_sel[axis] = np.s_[-ortho_offset:]  # pyrefly: ignore[unsupported-operation]
+ 
+       pre = pre[tuple(pre_sel)]
+       post = post[tuple(post_sel)]
